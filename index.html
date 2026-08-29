@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Seven Trials — A Gate Opens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#08080a; --ash:#131217; --ash-2:#1b1a21; --line:#2c2a33;
+  --gold:#c9a24c; --gold-dim:#7a672f; --ember:#c1502e; --moss:#5c7a4f;
+  --parchment:#ece2c6; --parchment-dim:#a89f88; --blood:#7a2e2e;
+  --glow:0 0 24px rgba(201,162,76,.35);
+  --font-display:'Cinzel',serif; --font-body:'Cormorant Garamond',serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:
+    radial-gradient(ellipse at 50% -10%,#201c14 0%,transparent 55%),
+    radial-gradient(ellipse at 50% 110%,#14181a 0%,transparent 55%),
+    var(--void);
+  color:var(--parchment); font-family:var(--font-body); font-size:19px;
+  line-height:1.5; overflow-x:hidden;
+}
+::selection{background:var(--gold-dim);color:var(--parchment)}
+h1,h2,h3{font-family:var(--font-display);letter-spacing:.04em;margin:0 0 .5em}
+button,input{font-family:var(--font-body)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+}
+
+#embers{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.ember-particle{
+  position:absolute;bottom:-10px;width:3px;height:3px;border-radius:50%;
+  background:var(--gold);box-shadow:0 0 6px 2px rgba(201,162,76,.6);
+  animation:rise linear infinite;opacity:.7
+}
+@keyframes rise{
+  0%{transform:translateY(0) translateX(0);opacity:0}
+  10%{opacity:.8}
+  100%{transform:translateY(-110vh) translateX(var(--drift,20px));opacity:0}
+}
+
+#tracker{
+  position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:50;
+  display:flex;gap:10px;align-items:center;background:rgba(8,8,10,.72);
+  backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:40px;
+  padding:8px 18px
+}
+.facet{
+  width:15px;height:15px;position:relative;
+  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+  background:#2a2830;border:1px solid var(--line);transition:all .6s ease
+}
+.facet.lit{background:var(--gold);box-shadow:0 0 10px 2px rgba(201,162,76,.8);border-color:var(--gold)}
+#tracker-label{font-family:var(--font-mono);font-size:10px;letter-spacing:.15em;color:var(--parchment-dim);text-transform:uppercase;margin-right:4px}
+
+.section{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 20px 70px;position:relative;z-index:2}
+.wrap{max-width:640px;width:100%;text-align:center}
+.eyebrow,.trial-num{font-family:var(--font-mono);text-transform:uppercase;color:var(--ember)}
+.eyebrow{font-size:12px;letter-spacing:.3em;margin-bottom:14px;display:block}
+.trial-num{font-size:14px;letter-spacing:.2em}
+.trial-title{font-size:clamp(28px,5vw,42px);color:var(--parchment);text-shadow:var(--glow)}
+.lore{color:var(--parchment-dim);font-style:italic;font-size:22px;max-width:520px;margin:18px auto 34px;line-height:1.6}
+.divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:30px auto}
+#hero h1{font-size:clamp(34px,7vw,56px);color:var(--parchment)}
+#hero .sub{font-family:var(--font-mono);font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:8px}
+#name-input{margin-top:38px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+#name-field{background:var(--ash);border:1px solid var(--line);color:var(--parchment);padding:14px 18px;font-size:18px;border-radius:4px;width:240px;text-align:center}
+#name-field::placeholder{color:var(--parchment-dim)}
+
+.btn{
+  background:transparent;border:1px solid var(--gold);color:var(--gold);padding:14px 30px;
+  font-family:var(--font-mono);font-size:13px;letter-spacing:.15em;text-transform:uppercase;
+  cursor:pointer;border-radius:2px;transition:all .25s ease
+}
+.btn:hover{background:var(--gold);color:var(--void);box-shadow:var(--glow)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn:disabled:hover{background:transparent;color:var(--gold);box-shadow:none}
+.btn-ghost{border-color:var(--line);color:var(--parchment-dim)}
+.btn-ghost:hover{background:var(--ash-2);color:var(--parchment);box-shadow:none;border-color:var(--parchment-dim)}
+
+.card{background:linear-gradient(180deg,var(--ash),var(--ash-2));border:1px solid var(--line);border-radius:6px;padding:40px 34px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.answer-row{display:flex;gap:10px;justify-content:center;margin-top:26px;flex-wrap:wrap}
+.text-field{background:var(--void);border:1px solid var(--line);color:var(--parchment);padding:13px 16px;font-size:17px;border-radius:4px;width:260px;text-align:center;font-family:var(--font-mono)}
+.text-field::placeholder{color:var(--parchment-dim);font-family:var(--font-body);font-style:italic}
+.feedback{margin-top:18px;font-family:var(--font-mono);font-size:13px;min-height:20px;letter-spacing:.03em}
+.feedback.bad{color:var(--ember)}
+.feedback.good{color:var(--moss)}
+
+.choices{display:grid;gap:10px;margin-top:26px;text-align:left}
+.choice{background:var(--void);border:1px solid var(--line);color:var(--parchment-dim);padding:14px 18px;border-radius:4px;cursor:pointer;font-size:17px;transition:all .2s;text-align:left}
+.choice:hover{border-color:var(--gold-dim);color:var(--parchment)}
+.choice.correct{border-color:var(--moss);color:var(--parchment);background:rgba(92,122,79,.15)}
+.choice.wrong{border-color:var(--blood);color:var(--parchment-dim);background:rgba(122,46,46,.12)}
+.choice.disabled{pointer-events:none}
+
+.dice-arena{display:flex;justify-content:center;align-items:flex-start;gap:18px;flex-wrap:wrap;margin:24px auto 8px}
+.combatant{width:150px;text-align:center}
+.combatant[hidden],.battle-roll[hidden]{display:none}
+.combatant-name{font-family:var(--font-mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--parchment-dim)}
+.combatant-name strong{display:block;margin-top:3px;color:var(--gold);font-size:12px}
+.dice-container{perspective:800px;margin:14px auto;width:120px;height:120px}
+.dice{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 2s cubic-bezier(.2,.8,.2,1)}
+.dice-face{position:absolute;width:120px;height:120px;background:linear-gradient(135deg,var(--ash-2),#2a2a3e);border:2px solid var(--gold);border-radius:16px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:2.5rem;color:var(--gold);backface-visibility:hidden}
+.dice-face:nth-child(1){transform:translateZ(60px)}
+.dice-face:nth-child(2){transform:rotateY(90deg) translateZ(60px)}
+.dice-face:nth-child(3){transform:rotateY(180deg) translateZ(60px)}
+.dice-face:nth-child(4){transform:rotateY(-90deg) translateZ(60px)}
+.dice-face:nth-child(5){transform:rotateX(90deg) translateZ(60px)}
+.dice-face:nth-child(6){transform:rotateX(-90deg) translateZ(60px)}
+.dice.rolling{animation:spin3d 2s linear}
+.dice.success .dice-face{border-color:var(--moss);color:var(--moss);box-shadow:0 0 18px rgba(92,122,79,.32)}
+.dice.fail .dice-face{border-color:var(--ember);color:var(--ember)}
+@keyframes spin3d{0%{transform:rotateX(0) rotateY(0)}100%{transform:rotateX(720deg) rotateY(720deg)}}
+.dice-log{font-family:var(--font-mono);font-size:12px;color:var(--parchment-dim);margin-top:16px;min-height:18px}
+.battle-rolls{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:10px;margin:24px auto 0;max-width:520px}
+.battle-roll{padding:12px 10px;background:var(--void);border:1px solid var(--line);border-radius:4px}
+.battle-roll span{display:block;font-family:var(--font-mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--parchment-dim)}
+.battle-roll strong{display:block;min-height:30px;margin-top:5px;font-family:var(--font-display);font-size:20px;color:var(--gold)}
+
+.rune-grid{display:grid;grid-template-columns:repeat(2,100px);gap:14px;justify-content:center;margin:26px 0}
+.rune-btn{height:100px;border:1px solid var(--line);border-radius:8px;background:var(--void);color:var(--gold-dim);font-size:42px;cursor:pointer;transition:all .2s}
+.rune-btn:hover{border-color:var(--gold-dim);color:var(--gold)}
+.rune-btn.lit{color:var(--parchment);background:rgba(201,162,76,.18);border-color:var(--gold);box-shadow:var(--glow);transform:scale(1.05)}
+.rune-btn.wrong{border-color:var(--blood);color:var(--ember)}
+
+.tranq-game{margin:30px auto;max-width:400px}
+.tranq-track{height:60px;position:relative;overflow:hidden;border:2px solid rgba(255,255,255,.1);border-radius:30px;background:linear-gradient(90deg,var(--blood) 0%,var(--blood) 30%,var(--moss) 40%,var(--moss) 60%,var(--blood) 70%,var(--blood) 100%)}
+.tranq-marker{position:absolute;top:5px;bottom:5px;left:0;width:20px;background:var(--gold);box-shadow:0 0 15px var(--gold);border-radius:10px;transition:left .05s linear}
+.tranq-target{position:absolute;top:0;bottom:0;left:40%;width:20%;border:2px dashed rgba(255,255,255,.5);border-radius:30px}
+.tranq-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+.emblem-row{display:flex;gap:16px;justify-content:center;margin-top:30px;flex-wrap:wrap}
+.emblem{width:78px;height:78px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:1px solid var(--line);border-radius:8px;background:var(--void);cursor:pointer;font-size:28px;transition:all .2s;color:var(--parchment)}
+.emblem span{font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;color:var(--parchment-dim);text-transform:uppercase}
+.emblem:hover{border-color:var(--gold-dim);transform:translateY(-2px)}
+.emblem.picked{border-color:var(--gold);box-shadow:var(--glow)}
+.sequence-slots{display:flex;gap:10px;justify-content:center;margin-top:20px}
+.slot{width:34px;height:34px;border:1px solid var(--line);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--ash)}
+
+.locked-overlay{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(8,8,10,.86);backdrop-filter:blur(3px);border-radius:6px;transition:opacity .6s ease}
+.locked-overlay .glyph{font-size:30px;color:var(--parchment-dim);margin-bottom:10px}
+.locked-overlay p{font-family:var(--font-mono);font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--parchment-dim)}
+.section.unlocked .locked-overlay{opacity:0;pointer-events:none}
+.section-inner{position:relative}
+
+#finale{padding-top:80px}
+#finale .card{border-color:var(--gold);box-shadow:0 0 60px rgba(201,162,76,.15)}
+#code-tablet{margin-top:30px;padding:26px 20px;background:var(--void);border:1px solid var(--gold);border-radius:6px;font-family:var(--font-mono);font-size:24px;letter-spacing:.1em;color:var(--gold);word-break:break-all}
+#code-tablet[hidden]{display:none}
+#retro-reveal{min-height:196px;margin-top:28px;padding:20px 18px;position:relative;overflow:hidden;border:1px solid var(--gold-dim);border-radius:5px;background:#060707;text-align:center;font-family:var(--font-mono)}
+#retro-reveal::before{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(236,226,198,.035) 0 1px,transparent 1px 4px);mix-blend-mode:screen}
+.retro-label{position:relative;color:var(--parchment-dim);font-size:10px;letter-spacing:.2em}
+#gift-counter{position:relative;margin:12px 0 3px;color:var(--gold);font-size:clamp(48px,12vw,78px);line-height:1;font-weight:700;letter-spacing:-.08em;text-shadow:0 0 14px rgba(201,162,76,.5)}
+#gift-counter.counting{animation:crt-jolt .12s steps(2,end)}
+.retro-status{position:relative;min-height:20px;color:var(--moss);font-size:11px;letter-spacing:.11em;text-transform:uppercase}
+#gift-blast{position:absolute;inset:0;pointer-events:none}
+.pixel{position:absolute;left:50%;top:50%;width:7px;height:7px;background:var(--gold);opacity:0;box-shadow:0 0 8px currentColor}
+#retro-reveal.blast{animation:screen-flash .58s ease-out}
+#retro-reveal.blast .pixel{animation:pixel-burst .9s cubic-bezier(.08,.7,.18,1) var(--delay) forwards}
+#start-gift-btn{margin-top:18px}
+@keyframes crt-jolt{0%{transform:translateX(0)}25%{transform:translateX(-3px)}50%{transform:translateX(3px)}100%{transform:translateX(0)}}
+@keyframes screen-flash{0%,18%{background:#ece2c6}20%,100%{background:#060707}}
+@keyframes pixel-burst{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}18%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) rotate(300deg) scale(.35)}}
+#copy-btn{margin-top:16px}
+.finale-note{margin-top:26px;color:var(--parchment-dim);font-size:18px;font-style:italic}
+footer{text-align:center;padding:40px 20px;color:var(--parchment-dim);font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;position:relative;z-index:2}
+@media(max-width:520px){.text-field{width:100%}.card{padding:30px 20px}#tracker{padding:7px 12px;gap:7px}#tracker-label{display:none}.rune-grid{grid-template-columns:repeat(2,82px)}.rune-btn{height:82px}}
+</style>
+</head>
+<body>
+<div id="embers"></div>
+
+<div id="tracker" aria-label="Trial progress">
+  <span id="tracker-label">Trials</span>
+  <div class="facet" data-facet="1"></div><div class="facet" data-facet="2"></div>
+  <div class="facet" data-facet="3"></div><div class="facet" data-facet="4"></div>
+  <div class="facet" data-facet="5"></div><div class="facet" data-facet="6"></div>
+  <div class="facet" data-facet="7"></div>
+</div>
+
+<section class="section" id="hero">
+  <div class="wrap">
+    <svg width="120" height="120" viewBox="0 0 100 100" aria-hidden="true">
+      <polygon points="50,4 90,25 90,75 50,96 10,75 10,25" fill="none" stroke="#c9a24c" stroke-width="1"/>
+      <polygon points="50,20 76,34 76,66 50,80 24,66 24,34" fill="none" stroke="#7a672f" stroke-width="1"/>
+      <circle cx="50" cy="50" r="4" fill="#c9a24c"/>
+    </svg>
+    <span class="eyebrow">A Gift Sealed Behind Seven Trials</span>
+    <h1>The Gate Awaits, Tarnished.</h1>
+    <p class="lore">Somewhere between the Lands Between, a wild island, and the clatter of dice on a table, a reward has been sealed for you. Seven trials guard it. Beat them, and the gate will open.</p>
+    <div id="name-input">
+      <input type="text" id="name-field" placeholder="Speak your name..." maxlength="24">
+      <button class="btn" id="begin-btn">Begin the Trials</button>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="t1">
+  <div class="wrap section-inner">
+    <span class="trial-num">Trial I — The Riddle of the Lands Between</span>
+    <h2 class="trial-title">What Never Lived, Yet Rules</h2>
+    <div class="card">
+      <p class="lore" style="font-size:19px">“I am not alive, yet I grow without end.<br>I have no heart, yet armies kneel to my golden branches.<br>Rooted in ash, I promise eternity—and grant only rot.<br>What am I?”</p>
+      <div class="answer-row">
+        <input type="text" class="text-field" id="a1" placeholder="Your answer...">
+        <button class="btn" id="answer-t1">Speak It</button>
+      </div>
+      <div class="feedback" id="f1" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="locked-overlay"><div class="glyph">⛔</div><p>Sealed</p></div>
+</section>
+
+<section class="section" id="t2">
+  <div class="wrap section-inner">
+    <span class="trial-num">Trial II — The Elden Sigil</span>
+    <h2 class="trial-title">Echo the Greater Will</h2>
+    <div class="card">
+      <p class="lore" style="font-size:19px">The Greater Will speaks in patterns. Watch the runes light up, then repeat the sacred sequence through three rounds.</p>
+      <div class="rune-grid">
+        <button class="rune-btn" data-rune="0" aria-label="Rune Fehu">ᚠ</button>
+        <button class="rune-btn" data-rune="1" aria-label="Rune Uruz">ᚢ</button>
+        <button class="rune-btn" data-rune="2" aria-label="Rune Thurisaz">ᚦ</button>
+        <button class="rune-btn" data-rune="3" aria-label="Rune Ansuz">ᚨ</button>
+      </div>
+      <button class="btn" id="rune-start">Begin Sequence</button>
+      <div class="feedback" id="f2" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="locked-overlay"><div class="glyph">⛔</div><p>Sealed until Trial I is claimed</p></div>
+</section>
+
+<section class="section" id="t3">
+  <div class="wrap section-inner">
+    <span class="trial-num">Trial III — A Test of Fate</span>
+    <h2 class="trial-title">Persuade the Guardian</h2>
+    <div class="card">
+      <p class="lore" style="font-size:19px">The Guardian rolls with <strong style="color:var(--gold)">+13 Defence</strong>. You answer with <strong style="color:var(--gold)">−1 Attack</strong>. Meet or beat his total to pass.</p>
+      <div class="dice-arena">
+        <div class="combatant">
+          <div class="combatant-name">Guardian<strong>+13 Defence</strong></div>
+          <div class="dice-container"><div class="dice" id="guardian-dice" aria-label="Guardian die">
+            <div class="dice-face">?</div><div class="dice-face">1</div><div class="dice-face">12</div><div class="dice-face">8</div><div class="dice-face">15</div><div class="dice-face">4</div>
+          </div></div>
+        </div>
+        <div class="combatant">
+          <div class="combatant-name">Your Die<strong>−1 Attack</strong></div>
+          <div class="dice-container"><div class="dice" id="player-dice" aria-label="Player die">
+            <div class="dice-face">?</div><div class="dice-face">1</div><div class="dice-face">12</div><div class="dice-face">8</div><div class="dice-face">15</div><div class="dice-face">4</div>
+          </div></div>
+        </div>
+        <div class="combatant" id="romco-combatant" hidden>
+          <div class="combatant-name">Big Romco<strong>+13 Attack</strong></div>
+          <div class="dice-container"><div class="dice" id="romco-dice" aria-label="Big Romco die">
+            <div class="dice-face">?</div><div class="dice-face">1</div><div class="dice-face">12</div><div class="dice-face">8</div><div class="dice-face">15</div><div class="dice-face">4</div>
+          </div></div>
+        </div>
+      </div>
+      <div class="battle-rolls">
+        <div class="battle-roll"><span>Guardian Defence</span><strong id="guardian-roll">—</strong></div>
+        <div class="battle-roll"><span>Your Attack</span><strong id="player-roll">—</strong></div>
+        <div class="battle-roll" id="romco-roll-card" hidden><span>Big Romco Attack</span><strong id="romco-roll">—</strong></div>
+      </div>
+      <div style="margin-top:22px"><button class="btn" id="roll-btn">Guardian Rolls +13 Defence</button></div>
+      <div class="dice-log" id="dice-log" aria-live="polite">The Guardian grips his die. Begin the first clash.</div>
+    </div>
+  </div>
+  <div class="locked-overlay"><div class="glyph">⛔</div><p>Sealed until Trial II is claimed</p></div>
+</section>
+
+<section class="section" id="t4">
+  <div class="wrap section-inner">
+    <span class="trial-num">Trial IV — The Beast of the Island</span>
+    <h2 class="trial-title">Tame the Beast</h2>
+    <div class="card">
+      <p class="lore" style="font-size:19px">A wild Rex approaches. Set the marker moving, then stop it in the green zone to land the tranquilizer shot.</p>
+      <div class="tranq-game"><div class="tranq-track"><div class="tranq-target"></div><div class="tranq-marker" id="tranq-marker"></div></div></div>
+      <div class="tranq-actions">
+        <button class="btn" id="tranq-start">Begin Hunt</button>
+        <button class="btn" id="tranq-fire" hidden>Fire Tranq</button>
+        <button class="btn btn-ghost" id="tranq-retry" hidden>Try Again</button>
+      </div>
+      <div class="feedback" id="f4" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="locked-overlay"><div class="glyph">⛔</div><p>Sealed until Trial III is claimed</p></div>
+</section>
+
+<section class="section" id="t5">
+  <div class="wrap section-inner">
+    <span class="trial-num">Trial V — Lore of the Erdtree</span>
+    <h2 class="trial-title">Spot the Impostor</h2>
+    <div class="card">
+      <p class="lore" style="font-size:19px">Which of these does <em>not</em> belong among the Great Rune holders of the Lands Between?</p>
+      <div class="choices" id="choices5">
+        <button class="choice" data-correct="false">Radahn</button>
+        <button class="choice" data-correct="false">Rennala</button>
+        <button class="choice" data-correct="false">Morgott</button>
+        <button class="choice" data-correct="true">Gwyn</button>
+      </div>
+      <div class="feedback" id="f5" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="locked-overlay"><div class="glyph">⛔</div><p>Sealed until Trial IV is claimed</p></div>
+</section>
+
+<section class="section" id="t6">
+  <div class="wrap section-inner">
+    <span class="trial-num">Trial VI — The Final Sigil</span>
+    <h2 class="trial-title">Seal the Gate Open</h2>
+    <div class="card">
+      <p class="lore" style="font-size:19px">When the <strong style="color:var(--gold)">Flame</strong> burned bright, the <strong style="color:var(--gold)">Fang</strong> was raised; as <strong style="color:var(--gold)">Fate</strong> turned, the <strong style="color:var(--gold)">Rune</strong> opened the gate.</p>
+      <div class="sequence-slots" id="seq-slots"><div class="slot">?</div><div class="slot">?</div><div class="slot">?</div><div class="slot">?</div></div>
+      <div class="emblem-row" id="emblem-row"></div>
+      <div class="feedback" id="f6" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="locked-overlay"><div class="glyph">⛔</div><p>Sealed until Trial V is claimed</p></div>
+</section>
+
+<section class="section" id="t7">
+  <div class="wrap section-inner">
+    <span class="trial-num">Trial VII — The Oinko Transmission</span>
+    <h2 class="trial-title">One Last Question</h2>
+    <div class="card">
+      <p class="lore" style="font-size:19px">Watch Oinko’s latest YouTube <strong><u>video</u></strong> from Saturday and answer the puzzle question <strong><u>😄 🤡</u></strong></p>
+      <div class="answer-row">
+        <input type="text" class="text-field" id="a7" placeholder="Enter the answer code...">
+        <button class="btn" id="answer-t7">Transmit</button>
+      </div>
+      <div class="feedback" id="f7" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="locked-overlay"><div class="glyph">⛔</div><p>Sealed until Trial VI is claimed</p></div>
+</section>
+
+<section class="section" id="finale">
+  <div class="wrap section-inner">
+    <span class="eyebrow">The Gate Opens</span>
+    <h2 class="trial-title" id="finale-title">The Seal Is Broken</h2>
+    <div class="card">
+      <p class="lore" style="font-size:19px">Seven trials, one gift. Well fought.</p>
+      <div id="retro-reveal" aria-live="polite">
+        <div class="retro-label">GIFT VALUE COUNTER</div>
+        <div id="gift-counter">€00</div>
+        <div class="retro-status" id="retro-status">Awaiting final transmission…</div>
+        <div id="gift-blast" aria-hidden="true"></div>
+      </div>
+      <button class="btn" id="start-gift-btn" hidden>Start Gift Counter</button>
+      <div id="code-tablet" hidden>••••• — ••••• — •••••</div>
+      <button class="btn" id="copy-btn">Copy Code</button>
+      <p class="finale-note">Happy birthday — from your Family in Komarnicka Castle.</p>
+    </div>
+  </div>
+  <div class="locked-overlay"><div class="glyph">⛔</div><p>The gate remains sealed</p></div>
+</section>
+
+<footer>FORGED FOR A FELLOW ADVENTURER · TAKE YOUR TIME · THE GATE WAITS FOR NO ONE, BUT IT WILL WAIT FOR YOU</footer>
+
+<script>
+/* Replace this placeholder with the real Steam code before publishing. */
+const STEAM_CODE = 'RRHVR-YN76K-65LV2';
+const STORAGE_KEY = 'combined-seven-trials-progress-v3';
+const state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"solved":[false,false,false,false,false,false,false],"name":""}');
+if (!Array.isArray(state.solved) || state.solved.length !== 7) state.solved = [false,false,false,false,false,false,false];
+
+function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function norm(value){ return value.toLowerCase().replace(/[^a-z0-9]/g,''); }
+
+/* Kimi sound system */
+const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+let audioCtx;
+function initAudio(){
+  if (!AudioContextClass) return;
+  if (!audioCtx) audioCtx = new AudioContextClass();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+function playTone(freq,duration,type='sine'){
+  initAudio();
+  if (!audioCtx) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq,audioCtx.currentTime);
+  gain.gain.setValueAtTime(.1,audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+duration);
+  osc.connect(gain); gain.connect(audioCtx.destination); osc.start();
+  osc.stop(audioCtx.currentTime+duration);
+}
+function playSuccess(){ playTone(523,.1); setTimeout(()=>playTone(659,.1),100); setTimeout(()=>playTone(784,.2),200); }
+function playFail(){ playTone(200,.3,'sawtooth'); }
+function playRune(){ playTone(800+Math.random()*400,.15,'sine'); }
+function playBootBeep(value){ playTone(220+value*15,.045,'square'); }
+function playBlast(){
+  initAudio();
+  if (!audioCtx) return;
+  const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+  osc.type='sawtooth'; osc.frequency.setValueAtTime(150,audioCtx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(48,audioCtx.currentTime+.62);
+  gain.gain.setValueAtTime(.12,audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+.72);
+  osc.connect(gain);gain.connect(audioCtx.destination);osc.start();osc.stop(audioCtx.currentTime+.72);
+}
+
+(function spawnEmbers(){
+  const container=document.getElementById('embers');
+  const count=window.innerWidth<600?14:26;
+  for(let i=0;i<count;i++){
+    const ember=document.createElement('div'); ember.className='ember-particle';
+    ember.style.left=Math.random()*100+'vw'; ember.style.setProperty('--drift',(Math.random()*60-30)+'px');
+    const duration=8+Math.random()*10; ember.style.animationDuration=duration+'s';
+    ember.style.animationDelay=Math.random()*duration+'s'; ember.style.width=ember.style.height=2+Math.random()*2+'px';
+    container.appendChild(ember);
+  }
+})();
+
+const sectionIds=['t1','t2','t3','t4','t5','t6','t7','finale'];
+function refreshLocks(){
+  sectionIds.forEach((id,index)=>document.getElementById(id).classList.toggle('unlocked',index===0||state.solved[index-1]));
+  document.querySelectorAll('.facet').forEach((facet,index)=>facet.classList.toggle('lit',Boolean(state.solved[index])));
+  saveState();
+}
+function markSolved(index){
+  if(state.solved[index]) return;
+  state.solved[index]=true; refreshLocks(); playSuccess();
+  if(index===6) revealCode();
+  setTimeout(()=>document.getElementById(sectionIds[index+1])?.scrollIntoView({behavior:'smooth'}),650);
+}
+
+document.getElementById('begin-btn').addEventListener('click',()=>{
+  initAudio(); playRune();
+  const name=document.getElementById('name-field').value.trim();
+  if(name){state.name=name;saveState();}
+  document.getElementById('t1').scrollIntoView({behavior:'smooth'});
+});
+if(state.name) document.getElementById('name-field').value=state.name;
+
+function checkTrialOne(){
+  const good=['erdtree','theerdtree'].includes(norm(document.getElementById('a1').value));
+  const feedback=document.getElementById('f1');
+  feedback.textContent=good?'The branches bow. Trial claimed.':'The roots do not stir. Try again.';
+  feedback.className='feedback '+(good?'good':'bad');
+  if(good) markSolved(0); else playFail();
+}
+document.getElementById('answer-t1').addEventListener('click',checkTrialOne);
+document.getElementById('a1').addEventListener('keydown',event=>{if(event.key==='Enter')checkTrialOne();});
+
+let runeSequence=[],playerSequence=[],runeRound=0,runePlaying=false;
+function lightRune(index){
+  const button=document.querySelector(`[data-rune="${index}"]`);
+  button.classList.add('lit'); playRune(); setTimeout(()=>button.classList.remove('lit'),400);
+}
+function playRuneSequence(){
+  let index=0; runePlaying=true;
+  const interval=setInterval(()=>{
+    if(index>=runeSequence.length){clearInterval(interval);runePlaying=false;return;}
+    lightRune(runeSequence[index++]);
+  },800);
+}
+function nextRuneRound(){
+  const requiredClicks=[3,4,5];
+  if(runeRound>=requiredClicks.length){
+    const feedback=document.getElementById('f2'); feedback.textContent='The sigil aligns. Trial claimed.'; feedback.className='feedback good';
+    markSolved(1); return;
+  }
+  runeRound++; playerSequence=[];
+  while(runeSequence.length<requiredClicks[runeRound-1]) runeSequence.push(Math.floor(Math.random()*4));
+  document.getElementById('f2').textContent=`Round ${runeRound} of ${requiredClicks.length} — repeat ${runeSequence.length} runes.`;
+  setTimeout(playRuneSequence,500);
+}
+function startRuneSequence(){
+  initAudio(); runeSequence=[];playerSequence=[];runeRound=0;runePlaying=true;
+  document.getElementById('rune-start').hidden=true; document.getElementById('f2').className='feedback'; nextRuneRound();
+}
+function handleRuneClick(index){
+  if(runePlaying||state.solved[1]) return;
+  lightRune(index); playerSequence.push(index);
+  if(playerSequence.some((value,i)=>value!==runeSequence[i])){
+    const button=document.querySelector(`[data-rune="${index}"]`); button.classList.add('wrong');
+    setTimeout(()=>button.classList.remove('wrong'),500); playFail();
+    const feedback=document.getElementById('f2'); feedback.textContent='The pattern falters. Begin again.'; feedback.className='feedback bad';
+    document.getElementById('rune-start').hidden=false; runePlaying=true; return;
+  }
+  if(playerSequence.length===runeSequence.length){runePlaying=true;setTimeout(nextRuneRound,650);}
+}
+document.getElementById('rune-start').addEventListener('click',startRuneSequence);
+document.querySelectorAll('.rune-btn').forEach(button=>button.addEventListener('click',()=>handleRuneClick(Number(button.dataset.rune))));
+
+let rolling=false;
+let guardianDefense=null;
+let playerAttack=null;
+let romcoJoined=false;
+let combatStage='guardian';
+function randomD20(){
+  if(!window.crypto?.getRandomValues) return 1+Math.floor(Math.random()*20);
+  const values=new Uint32Array(1);
+  const limit=0x100000000-(0x100000000%20);
+  do{window.crypto.getRandomValues(values);}while(values[0]>=limit);
+  return 1+(values[0]%20);
+}
+function animateD20(dieId,onResult){
+  const die=document.getElementById(dieId);
+  die.classList.remove('success','fail');die.classList.add('rolling');rolling=true;
+  let ticks=0;
+  const spin=setInterval(()=>{
+    playTone(200+Math.random()*600,.05);ticks++;
+    if(ticks>20){
+      clearInterval(spin);die.classList.remove('rolling');rolling=false;
+      const result=randomD20();
+      die.querySelector('.dice-face').textContent=result;
+      die.setAttribute('aria-label',`${dieId.replace('-', ' ')} rolled ${result}`);
+      onResult(result);
+    }
+  },90);
+}
+function rollDie(){
+  if(rolling||state.solved[2]) return;
+  initAudio();
+  const log=document.getElementById('dice-log');
+  const button=document.getElementById('roll-btn');
+  const guardianDisplay=document.getElementById('guardian-roll');
+  const playerDisplay=document.getElementById('player-roll');
+  const romcoDisplay=document.getElementById('romco-roll');
+  button.disabled=true;
+
+  if(combatStage==='guardian'){
+    guardianDisplay.textContent='Rolling…';playerDisplay.textContent='—';
+    if(romcoJoined) romcoDisplay.textContent='—';
+    log.textContent='The Guardian casts his d20 with +13 Defence…';
+    animateD20('guardian-dice',result=>{
+      guardianDefense=result+13;guardianDisplay.textContent=`${result} + 13 = ${guardianDefense}`;
+      combatStage='player';
+      log.textContent=`Guardian Defence is ${guardianDefense}. Roll your d20 with −1 Attack.`;
+      button.textContent='Roll Your −1 Attack';button.disabled=false;playRune();
+    });
+    return;
+  }
+
+  if(combatStage==='player'){
+    playerDisplay.textContent='Rolling…';log.textContent='You cast the attack die with −1…';
+    animateD20('player-dice',result=>{
+      playerAttack=result-1;playerDisplay.textContent=`${result} − 1 = ${playerAttack}`;
+      if(!romcoJoined&&playerAttack>=guardianDefense){
+        document.getElementById('player-dice').classList.add('success');
+        log.textContent=`Attack ${playerAttack} beats Defence ${guardianDefense}. Big Romco with +13 Attack was not needed—well done!`;
+        markSolved(2);return;
+      }
+      if(!romcoJoined){
+        document.getElementById('player-dice').classList.add('fail');
+        romcoJoined=true;combatStage='guardian';guardianDefense=null;playerAttack=null;
+        document.getElementById('romco-combatant').hidden=false;
+        document.getElementById('romco-roll-card').hidden=false;
+        log.textContent='The first attack fails. Big Romco enters with +13 Attack for the next round!';
+        button.textContent='Start Big Romco Round';button.disabled=false;playFail();
+        setTimeout(playSuccess,450);return;
+      }
+      combatStage='romco';
+      log.textContent=`Your Attack is ${playerAttack}. Now Big Romco adds his +13 Attack roll.`;
+      button.textContent='Roll Big Romco +13';button.disabled=false;playRune();
+    });
+    return;
+  }
+
+  romcoDisplay.textContent='Rolling…';log.textContent='Big Romco casts the final attack die…';
+  animateD20('romco-dice',result=>{
+    const romcoAttack=result+13;
+    const combinedAttack=playerAttack+romcoAttack;
+    romcoDisplay.textContent=`${result} + 13 = ${romcoAttack}`;
+    if(combinedAttack>=guardianDefense){
+      document.getElementById('player-dice').classList.add('success');
+      document.getElementById('romco-dice').classList.add('success');
+      log.textContent=`Combined Attack ${playerAttack} + ${romcoAttack} = ${combinedAttack}, defeating Defence ${guardianDefense}. Big Romco delivers!`;
+      markSolved(2);
+    }else{
+      document.getElementById('player-dice').classList.add('fail');
+      document.getElementById('romco-dice').classList.add('fail');
+      log.textContent=`Combined Attack ${combinedAttack} falls below Defence ${guardianDefense}. Roll the combined team again.`;
+      guardianDefense=null;playerAttack=null;combatStage='guardian';
+      button.textContent='Roll Combined Again';button.disabled=false;playFail();
+    }
+  });
+}
+document.getElementById('roll-btn').addEventListener('click',rollDie);
+
+let tranqPos=0,tranqDir=1,tranqAnimating=false,tranqInterval;
+function startTranq(){
+  initAudio(); clearInterval(tranqInterval);tranqPos=0;tranqDir=1;tranqAnimating=true;
+  document.getElementById('tranq-start').hidden=true;document.getElementById('tranq-retry').hidden=true;document.getElementById('tranq-fire').hidden=false;
+  const marker=document.getElementById('tranq-marker'); document.getElementById('f4').textContent='';
+  tranqInterval=setInterval(()=>{tranqPos+=3*tranqDir;if(tranqPos>=95){tranqPos=95;tranqDir=-1}if(tranqPos<=0){tranqPos=0;tranqDir=1}marker.style.left=tranqPos+'%';},20);
+}
+function fireTranq(){
+  if(!tranqAnimating||state.solved[3]) return;
+  clearInterval(tranqInterval);tranqAnimating=false;playRune();
+  const hit=tranqPos>=40&&tranqPos<=60,feedback=document.getElementById('f4');
+  document.getElementById('tranq-fire').hidden=true;
+  if(hit){feedback.textContent='Direct hit. The Rex is tranquilized. Trial claimed.';feedback.className='feedback good';markSolved(3);}
+  else{feedback.textContent='Miss. The beast roars and charges—try again.';feedback.className='feedback bad';document.getElementById('tranq-retry').hidden=false;playFail();}
+}
+document.getElementById('tranq-start').addEventListener('click',startTranq);
+document.getElementById('tranq-retry').addEventListener('click',startTranq);
+document.getElementById('tranq-fire').addEventListener('click',fireTranq);
+
+document.querySelectorAll('#choices5 .choice').forEach(choice=>choice.addEventListener('click',()=>{
+  if(state.solved[4]) return;
+  const correct=choice.dataset.correct==='true',feedback=document.getElementById('f5');
+  if(correct){
+    document.querySelectorAll('#choices5 .choice').forEach(item=>item.classList.add('disabled'));
+    choice.classList.add('correct');feedback.textContent='Correct. Trial claimed.';feedback.className='feedback good';markSolved(4);
+  }else{
+    choice.classList.add('wrong');feedback.textContent='Not quite. Choose again.';feedback.className='feedback bad';playFail();
+    setTimeout(()=>choice.classList.remove('wrong'),800);
+  }
+}));
+
+const EMBLEMS=[
+  {key:'flame',icon:'🔥',label:'Flame'},
+  {key:'fang',icon:'🦴',label:'Fang'},
+  {key:'fate',icon:'🎲',label:'Fate'},
+  {key:'rune',icon:'ᛝ',label:'Rune'}
+];
+const TARGET_SEQUENCE=['flame','fang','fate','rune'];
+let pickedSequence=[];
+function shuffledEmblems(){
+  const emblems=[...EMBLEMS];
+  for(let index=emblems.length-1;index>0;index--){
+    const swap=Math.floor(Math.random()*(index+1));
+    [emblems[index],emblems[swap]]=[emblems[swap],emblems[index]];
+  }
+  return emblems;
+}
+function buildEmblems(){
+  const row=document.getElementById('emblem-row');row.innerHTML='';
+  shuffledEmblems().forEach(emblem=>{
+    const button=document.createElement('button');button.className='emblem';button.type='button';
+    button.innerHTML=`<div>${emblem.icon}</div><span>${emblem.label}</span>`;
+    button.addEventListener('click',()=>handleEmblemClick(emblem.key,button));row.appendChild(button);
+  });
+}
+function updateSlots(){
+  document.querySelectorAll('#seq-slots .slot').forEach((slot,index)=>{
+    const emblem=EMBLEMS.find(item=>item.key===pickedSequence[index]);slot.textContent=emblem?emblem.icon:'?';
+  });
+}
+function handleEmblemClick(key,button){
+  if(pickedSequence.length>=4||state.solved[5]) return;
+  initAudio();playRune();pickedSequence.push(key);button.classList.add('picked');updateSlots();
+  if(pickedSequence.length!==4) return;
+  const correct=pickedSequence.every((value,index)=>value===TARGET_SEQUENCE[index]);
+  const feedback=document.getElementById('f6');
+  if(correct){
+    feedback.textContent='The sigil locks into place. The gate trembles.';feedback.className='feedback good';markSolved(5);
+  }else{
+    feedback.textContent='The sigil rejects this order. Resetting.';feedback.className='feedback bad';playFail();
+    setTimeout(()=>{pickedSequence=[];updateSlots();buildEmblems();feedback.textContent='';},1300);
+  }
+}
+buildEmblems();
+
+function checkTrialSeven(){
+  const answer=norm(document.getElementById('a7').value);
+  const correct=['67','sixseven'].includes(answer);
+  const feedback=document.getElementById('f7');
+  feedback.textContent=correct?'Transmission confirmed. The gift is unlocked.':'That transmission does not match. Watch closely and try again.';
+  feedback.className='feedback '+(correct?'good':'bad');
+  if(correct) markSolved(6); else playFail();
+}
+document.getElementById('answer-t7').addEventListener('click',checkTrialSeven);
+document.getElementById('a7').addEventListener('keydown',event=>{if(event.key==='Enter')checkTrialSeven();});
+
+function buildBlastPixels(){
+  const blast=document.getElementById('gift-blast');
+  if(blast.childElementCount) return;
+  for(let index=0;index<42;index++){
+    const pixel=document.createElement('i');
+    const angle=(Math.PI*2*index)/42+(Math.random()-.5)*.15;
+    const distance=70+Math.random()*150;
+    pixel.className='pixel';
+    pixel.style.setProperty('--x',`${Math.cos(angle)*distance}px`);
+    pixel.style.setProperty('--y',`${Math.sin(angle)*distance}px`);
+    pixel.style.setProperty('--delay',`${Math.random()*.13}s`);
+    pixel.style.background=index%5===0?'var(--ember)':index%3===0?'var(--parchment)':'var(--gold)';
+    blast.appendChild(pixel);
+  }
+}
+
+let giftTimer;
+let giftRunning=false;
+function revealCode(){
+  const nameBit=state.name?`, ${state.name}`:'';
+  const reveal=document.getElementById('retro-reveal');
+  const counter=document.getElementById('gift-counter');
+  const status=document.getElementById('retro-status');
+  const tablet=document.getElementById('code-tablet');
+  const startButton=document.getElementById('start-gift-btn');
+  document.getElementById('finale-title').textContent=`Well Fought${nameBit}.`;
+  tablet.textContent=STEAM_CODE;
+  clearInterval(giftTimer);giftRunning=false;reveal.classList.remove('blast');counter.classList.remove('counting');
+  counter.textContent='€00';status.textContent='Final transmission ready';tablet.hidden=true;startButton.hidden=false;
+}
+function startGiftSequence(){
+  if(giftRunning) return;
+  giftRunning=true;initAudio();buildBlastPixels();
+  const reveal=document.getElementById('retro-reveal');
+  const counter=document.getElementById('gift-counter');
+  const status=document.getElementById('retro-status');
+  const tablet=document.getElementById('code-tablet');
+  const startButton=document.getElementById('start-gift-btn');
+  startButton.hidden=true;reveal.classList.remove('blast');counter.textContent='€00';tablet.hidden=true;
+  status.textContent='Counting gift value…';let value=0;
+  const tick=()=>{
+    value++;counter.textContent=`€${String(value).padStart(2,'0')}`;
+    counter.classList.remove('counting');void counter.offsetWidth;counter.classList.add('counting');playBootBeep(value);
+    if(value===30){
+      clearInterval(giftTimer);setTimeout(()=>{
+        reveal.classList.add('blast');counter.classList.remove('counting');playBlast();
+        status.textContent='30 EUR Steam Gift Code Unlocked';tablet.hidden=false;giftRunning=false;
+      },600);
+    }
+  };
+  tick();giftTimer=setInterval(tick,280);
+}
+document.getElementById('start-gift-btn').addEventListener('click',startGiftSequence);
+document.getElementById('copy-btn').addEventListener('click',()=>{
+  initAudio();navigator.clipboard.writeText(STEAM_CODE).then(()=>{
+    const button=document.getElementById('copy-btn'),original=button.textContent;button.textContent='Copied!';playSuccess();setTimeout(()=>button.textContent=original,1500);
+  });
+});
+
+refreshLocks();
+if(state.solved[6])revealCode();
+</script>
+</body>
+</html>
