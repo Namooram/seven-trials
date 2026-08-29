@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Seven Trials — A Gate Opens</title>
+<title>The Eight Trials — A Gate Opens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
@@ -146,6 +146,13 @@ button,input{font-family:var(--font-body)}
 .sequence-slots{display:flex;gap:10px;justify-content:center;margin-top:20px}
 .slot{width:34px;height:34px;border:1px solid var(--line);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--ash)}
 
+.hoard-timer{margin:16px 0 22px;font-family:var(--font-mono);font-size:28px;letter-spacing:.08em;color:var(--gold);text-shadow:var(--glow)}
+.hoard-btn{width:min(100%,360px);min-height:112px;font-size:15px;border-radius:8px;position:relative;overflow:hidden}
+.hoard-btn.active{animation:hoard-pulse .55s ease-in-out infinite alternate}
+.hoard-btn.hit{animation:hoard-hit .12s ease-out}
+@keyframes hoard-pulse{from{box-shadow:0 0 8px rgba(201,162,76,.2)}to{box-shadow:0 0 28px rgba(201,162,76,.58)}}
+@keyframes hoard-hit{50%{transform:scale(.96);background:var(--gold);color:var(--void)}}
+
 .locked-overlay{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(8,8,10,.86);backdrop-filter:blur(3px);border-radius:6px;transition:opacity .6s ease}
 .locked-overlay .glyph{font-size:30px;color:var(--parchment-dim);margin-bottom:10px}
 .locked-overlay p{font-family:var(--font-mono);font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--parchment-dim)}
@@ -184,7 +191,7 @@ footer{text-align:center;padding:40px 20px;color:var(--parchment-dim);font-famil
   <div class="facet" data-facet="1"></div><div class="facet" data-facet="2"></div>
   <div class="facet" data-facet="3"></div><div class="facet" data-facet="4"></div>
   <div class="facet" data-facet="5"></div><div class="facet" data-facet="6"></div>
-  <div class="facet" data-facet="7"></div>
+  <div class="facet" data-facet="7"></div><div class="facet" data-facet="8"></div>
 </div>
 
 <section class="section" id="hero">
@@ -194,9 +201,9 @@ footer{text-align:center;padding:40px 20px;color:var(--parchment-dim);font-famil
       <polygon points="50,20 76,34 76,66 50,80 24,66 24,34" fill="none" stroke="#7a672f" stroke-width="1"/>
       <circle cx="50" cy="50" r="4" fill="#c9a24c"/>
     </svg>
-    <span class="eyebrow">A Gift Sealed Behind Seven Trials</span>
+    <span class="eyebrow">A Gift Sealed Behind Eight Trials</span>
     <h1>The Gate Awaits, Tarnished.</h1>
-    <p class="lore">Somewhere between the Lands Between, a wild island, and the clatter of dice on a table, a reward has been sealed for you. Seven trials guard it. Beat them, and the gate will open.</p>
+    <p class="lore">Somewhere between the Lands Between, a wild island, and the clatter of dice on a table, a reward has been sealed for you. Eight trials guard it. Beat them, and the gate will open.</p>
     <div id="name-input">
       <input type="text" id="name-field" placeholder="Speak your name..." maxlength="24">
       <button class="btn" id="begin-btn">Begin the Trials</button>
@@ -332,7 +339,7 @@ footer{text-align:center;padding:40px 20px;color:var(--parchment-dim);font-famil
     <span class="trial-num">Trial VII — The Oinko Transmission</span>
     <h2 class="trial-title">One Last Question</h2>
     <div class="card">
-      <p class="lore" style="font-size:19px">Watch Oinko’s latest YouTube <strong><u>video</u></strong> from Saturday and answer the puzzle question <strong><u>😄 🤡</u></strong></p>
+      <p class="lore" style="font-size:19px">Watch Oinko’s latest YouTube <a href="https://youtu.be/dJD7EdPFiz4?si=NGO0hfKE5yA_3Zc_" target="_blank" rel="noopener noreferrer"><strong><u>video</u></strong></a> from Saturday and answer the puzzle question <strong><u>😄 🤡</u></strong></p>
       <div class="answer-row">
         <input type="text" class="text-field" id="a7" placeholder="Enter the answer code...">
         <button class="btn" id="answer-t7">Transmit</button>
@@ -343,12 +350,26 @@ footer{text-align:center;padding:40px 20px;color:var(--parchment-dim);font-famil
   <div class="locked-overlay"><div class="glyph">⛔</div><p>Sealed until Trial VI is claimed</p></div>
 </section>
 
+<section class="section" id="t8">
+  <div class="wrap section-inner">
+    <span class="trial-num">Trial VIII — The Golden Rush</span>
+    <h2 class="trial-title">Awaken the Golden Hoard</h2>
+    <div class="card">
+      <p class="lore" style="font-size:19px">A sleeping Golden Scarab guards the final path. For four fleeting seconds, strike its rune with all the speed of a Tarnished—the tribute it demands remains hidden.</p>
+      <div class="hoard-timer" id="hoard-time" aria-live="polite">4.0s</div>
+      <button class="btn hoard-btn" id="hoard-btn">Awaken the Golden Scarab</button>
+      <div class="feedback" id="f8" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="locked-overlay"><div class="glyph">⛔</div><p>Sealed until Trial VII is claimed</p></div>
+</section>
+
 <section class="section" id="finale">
   <div class="wrap section-inner">
     <span class="eyebrow">The Gate Opens</span>
     <h2 class="trial-title" id="finale-title">The Seal Is Broken</h2>
     <div class="card">
-      <p class="lore" style="font-size:19px">Seven trials, one gift. Well fought.</p>
+      <p class="lore" style="font-size:19px">Eight trials, one gift. Well fought.</p>
       <div id="retro-reveal" aria-live="polite">
         <div class="retro-label">GIFT VALUE COUNTER</div>
         <div id="gift-counter">€00</div>
@@ -369,9 +390,9 @@ footer{text-align:center;padding:40px 20px;color:var(--parchment-dim);font-famil
 <script>
 /* Replace this placeholder with the real Steam code before publishing. */
 const STEAM_CODE = 'RRHVR-YN76K-65LV2';
-const STORAGE_KEY = 'combined-seven-trials-progress-v3';
-const state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"solved":[false,false,false,false,false,false,false],"name":""}');
-if (!Array.isArray(state.solved) || state.solved.length !== 7) state.solved = [false,false,false,false,false,false,false];
+const STORAGE_KEY = 'combined-eight-trials-progress-v4';
+const state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"solved":[false,false,false,false,false,false,false,false],"name":""}');
+if (!Array.isArray(state.solved) || state.solved.length !== 8) state.solved = [false,false,false,false,false,false,false,false];
 
 function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 function norm(value){ return value.toLowerCase().replace(/[^a-z0-9]/g,''); }
@@ -423,7 +444,7 @@ function playBlast(){
   }
 })();
 
-const sectionIds=['t1','t2','t3','t4','t5','t6','t7','finale'];
+const sectionIds=['t1','t2','t3','t4','t5','t6','t7','t8','finale'];
 function refreshLocks(){
   sectionIds.forEach((id,index)=>document.getElementById(id).classList.toggle('unlocked',index===0||state.solved[index-1]));
   document.querySelectorAll('.facet').forEach((facet,index)=>facet.classList.toggle('lit',Boolean(state.solved[index])));
@@ -432,7 +453,7 @@ function refreshLocks(){
 function markSolved(index){
   if(state.solved[index]) return;
   state.solved[index]=true; refreshLocks(); playSuccess();
-  if(index===6) revealCode();
+  if(index===7) revealCode();
   setTimeout(()=>document.getElementById(sectionIds[index+1])?.scrollIntoView({behavior:'smooth'}),650);
 }
 
@@ -500,13 +521,15 @@ let guardianDefense=null;
 let playerAttack=null;
 let romcoJoined=false;
 let combatStage='guardian';
-function randomD20(){
-  if(!window.crypto?.getRandomValues) return 1+Math.floor(Math.random()*20);
+function secureRandomInt(min,max){
+  const range=max-min+1;
+  if(!window.crypto?.getRandomValues) return min+Math.floor(Math.random()*range);
   const values=new Uint32Array(1);
-  const limit=0x100000000-(0x100000000%20);
+  const limit=0x100000000-(0x100000000%range);
   do{window.crypto.getRandomValues(values);}while(values[0]>=limit);
-  return 1+(values[0]%20);
+  return min+(values[0]%range);
 }
+function randomD20(){return secureRandomInt(1,20);}
 function animateD20(dieId,onResult){
   const die=document.getElementById(dieId);
   die.classList.remove('success','fail');die.classList.add('rolling');rolling=true;
@@ -677,6 +700,52 @@ function checkTrialSeven(){
 document.getElementById('answer-t7').addEventListener('click',checkTrialSeven);
 document.getElementById('a7').addEventListener('keydown',event=>{if(event.key==='Enter')checkTrialSeven();});
 
+let hoardActive=false;
+let hoardClicks=0;
+let hoardTarget=0;
+let hoardDeadline=0;
+let hoardFrame;
+function finishHoardAttempt(success){
+  hoardActive=false;cancelAnimationFrame(hoardFrame);
+  const button=document.getElementById('hoard-btn');
+  const feedback=document.getElementById('f8');
+  button.classList.remove('active','hit');
+  if(success){
+    document.getElementById('hoard-time').textContent='Claimed';
+    button.textContent='The Golden Hoard Awakens';button.disabled=true;
+    feedback.textContent='The Scarab yields. The final path opens.';feedback.className='feedback good';
+    markSolved(7);
+  }else{
+    document.getElementById('hoard-time').textContent='0.0s';
+    button.textContent='Try the Golden Rush Again';
+    feedback.textContent='The hidden tribute was not met. Strike faster.';feedback.className='feedback bad';
+    playFail();
+  }
+}
+function updateHoardTimer(){
+  if(!hoardActive)return;
+  const remaining=Math.max(0,hoardDeadline-performance.now());
+  document.getElementById('hoard-time').textContent=`${(remaining/1000).toFixed(1)}s`;
+  if(remaining<=0){finishHoardAttempt(false);return;}
+  hoardFrame=requestAnimationFrame(updateHoardTimer);
+}
+function strikeHoard(){
+  if(state.solved[7])return;
+  initAudio();
+  const button=document.getElementById('hoard-btn');
+  if(!hoardActive){
+    hoardActive=true;hoardClicks=0;hoardTarget=secureRandomInt(18,24);hoardDeadline=performance.now()+4000;
+    button.textContent='Strike the Golden Rune';button.classList.add('active');
+    const feedback=document.getElementById('f8');feedback.textContent='Four seconds. The Scarab counts in silence.';feedback.className='feedback';
+    updateHoardTimer();
+  }
+  hoardClicks++;
+  button.classList.remove('hit');void button.offsetWidth;button.classList.add('hit');
+  playTone(320+secureRandomInt(0,7)*45,.035,'square');
+  if(hoardClicks>=hoardTarget)finishHoardAttempt(true);
+}
+document.getElementById('hoard-btn').addEventListener('click',strikeHoard);
+
 function buildBlastPixels(){
   const blast=document.getElementById('gift-blast');
   if(blast.childElementCount) return;
@@ -737,7 +806,7 @@ document.getElementById('copy-btn').addEventListener('click',()=>{
 });
 
 refreshLocks();
-if(state.solved[6])revealCode();
+if(state.solved[7])revealCode();
 </script>
 </body>
 </html>
